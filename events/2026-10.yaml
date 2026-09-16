@@ -1,0 +1,30 @@
+# =====================================================================
+#  OCTOBER 2026  (events/2026-10.yaml)
+# =====================================================================
+
+events:
+  - title: CST8249 VM-Lab 4 — IDS & Firewalls
+    date: 2026-10-06
+    category: security
+    tags: [cst8249, lab]
+    note: Also PT-Lab 3 — Configure a Site-to-Site VPN.
+
+  - title: CST8249 Optional Practical SBA
+    date: 2026-10-13
+    category: lab
+    tags: [cst8249, lab]
+    note: No submission required — practice for the graded SBA.
+
+  - title: CST8249 SBA-1 — IOS Skills Assessment (15%)
+    date: 2026-10-20
+    time: "12:00"
+    category: exam
+    location: WT114
+    tags: [cst8249, exam]
+    note: Graded in-lab skills assessment. Worth 15%.
+
+  - title: Fall Break — no classes
+    date: 2026-10-26
+    category: other
+    tags: [break]
+    note: Study break runs Oct 26–30. Recurring classes are auto-skipped.

@@ -1,0 +1,258 @@
+/* =====================================================================
+   KALI CLUB CALENDAR — styles.css
+   ---------------------------------------------------------------------
+   Organised in sections so it's easy to find things:
+     1. Theme tokens (:root)      — colours, fonts. Change these first.
+     2. Category colours          — one per event type (drives chips).
+     3. Base / background         — body, matrix rain, scanlines.
+     4. Boot screen
+     5. Terminal window frame
+     6. Calendar (header + grid)
+     7. Sidebar (brand, ops, tag filters, legend, data buttons)
+     8. Command line (console)
+     9. Overlays (add / day / event-detail modals)
+    10. Footer + responsive + reduced-motion
+   ===================================================================== */
+
+/* ---- 1. THEME TOKENS ------------------------------------------------ */
+:root{
+  --bg:#08090d;          /* page background          */
+  --void:#05060a;        /* darkest panels           */
+  --surface:#0e1119;     /* cards / cells            */
+  --surface-2:#12161f;
+  --line:#1d2431;        /* borders                  */
+  --line-soft:#161b26;
+  --text:#c7d0e0;        /* body text                */
+  --muted:#5b6478;       /* secondary text           */
+  --dragon:#4d9fff;      /* Kali electric blue (hero)*/
+  --dragon-dim:#2b6ed1;
+  --cyan:#2ee6d6;        /* terminal cursor / prompt */
+  --glow:0 0 0 1px rgba(77,159,255,.35), 0 0 22px -6px rgba(77,159,255,.55);
+  --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+}
+
+/* ---- 2. CATEGORY COLOURS ------------------------------------------- */
+/* Each event has a `category`; the colour comes from here.
+   Add a new category by adding a --cat-* var AND a .cat-* rule below. */
+:root{
+  --cat-lecture:#4d9fff;   /* lectures / theory   */
+  --cat-lab:#35d07f;       /* hands-on labs       */
+  --cat-exam:#ffb43d;      /* exams, SBAs, due    */
+  --cat-security:#ff4d5e;  /* CTF / offensive     */
+  --cat-club:#b980ff;      /* Kali Club events    */
+  --cat-social:#ff8ac4;    /* social / hangout    */
+  --cat-other:#8892a6;     /* everything else     */
+}
+.cat-lecture{--c:var(--cat-lecture)}
+.cat-lab{--c:var(--cat-lab)}
+.cat-exam{--c:var(--cat-exam)}
+.cat-security{--c:var(--cat-security)}
+.cat-club{--c:var(--cat-club)}
+.cat-social{--c:var(--cat-social)}
+.cat-other{--c:var(--cat-other)}
+
+/* ---- 3. BASE / BACKGROUND ------------------------------------------ */
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--mono);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+#rain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.13}
+.scanlines{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.16) 3px,rgba(0,0,0,0) 4px);
+  mix-blend-mode:multiply;opacity:.5}
+
+/* ---- 4. BOOT SCREEN ------------------------------------------------- */
+#boot{position:fixed;inset:0;z-index:50;background:var(--void);
+  display:flex;align-items:center;justify-content:center;padding:6vw;cursor:pointer}
+#boot pre{color:var(--dragon);font-size:clamp(11px,1.6vw,15px);white-space:pre-wrap;
+  text-shadow:0 0 18px rgba(77,159,255,.4);max-width:760px;width:100%}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ---- 5. TERMINAL WINDOW FRAME -------------------------------------- */
+.wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:clamp(14px,3vw,40px)}
+.term{border:1px solid var(--line);border-radius:10px;background:rgba(10,12,18,.86);
+  backdrop-filter:blur(3px);box-shadow:0 30px 80px -30px rgba(0,0,0,.9),0 0 0 1px rgba(77,159,255,.06);
+  overflow:hidden}
+.titlebar{display:flex;align-items:center;gap:14px;padding:11px 16px;
+  background:linear-gradient(180deg,#12161f,#0c0f16);border-bottom:1px solid var(--line)}
+.dots{display:flex;gap:7px}
+.dot{width:12px;height:12px;border-radius:50%}
+.dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+.tpath{color:var(--muted);font-size:13px}
+.tpath b{color:var(--dragon);font-weight:700}
+.tclock{margin-left:auto;color:var(--muted);font-size:12px}
+.tclock span{color:var(--cyan)}
+
+.body{display:grid;grid-template-columns:1fr 300px;gap:0}
+.pane{padding:clamp(14px,2.4vw,26px)}
+.calpane{border-right:1px solid var(--line-soft);min-width:0}
+.sidepane{background:rgba(6,8,12,.5)}
+
+/* ---- 6. CALENDAR --------------------------------------------------- */
+.calhead{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.month{font-size:clamp(18px,2.6vw,26px);font-weight:800;letter-spacing:.04em;color:#eaf1ff;
+  text-shadow:0 0 22px rgba(77,159,255,.25)}
+.month .yr{color:var(--dragon)}
+.navbtns{display:flex;gap:8px;margin-left:auto}
+.btn{font-family:var(--mono);font-size:13px;color:var(--text);background:var(--surface);
+  border:1px solid var(--line);border-radius:6px;padding:7px 12px;cursor:pointer;transition:.14s;
+  display:inline-flex;align-items:center;gap:7px;line-height:1}
+.btn:hover{border-color:var(--dragon-dim);color:#fff;box-shadow:var(--glow)}
+.btn:active{transform:translateY(1px)}
+.btn.accent{border-color:var(--dragon-dim);color:var(--dragon)}
+.btn.accent:hover{background:rgba(77,159,255,.1)}
+
+.dow{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px}
+.dow span{color:var(--muted);font-size:11px;text-align:center;padding:4px 0;letter-spacing:.14em;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cell{aspect-ratio:1/.94;border:1px solid var(--line-soft);border-radius:6px;background:var(--surface);
+  padding:6px 6px 4px;position:relative;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;
+  transition:border-color .14s,box-shadow .14s,background .14s}
+.cell:hover{border-color:var(--dragon-dim);box-shadow:var(--glow)}
+.cell.out{opacity:.32;background:transparent}
+.cell.today{border-color:var(--dragon);box-shadow:inset 0 0 0 1px rgba(77,159,255,.4),0 0 26px -8px rgba(77,159,255,.6)}
+.cell .num{font-size:12px;color:var(--muted);font-weight:500}
+.cell.today .num{color:var(--dragon);font-weight:800}
+.chips{margin-top:auto;display:flex;flex-direction:column;gap:3px;overflow:hidden}
+/* event chip — border colour is the category colour via --c */
+.chip{font-size:10px;line-height:1.3;padding:2px 5px;border-radius:3px;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;border-left:2px solid var(--c,var(--muted));background:rgba(255,255,255,.03);color:#d7deec}
+.chip:hover{background:rgba(255,255,255,.1)}
+.more{font-size:9px;color:var(--muted);padding-left:2px}
+
+/* ---- 7. SIDEBAR ---------------------------------------------------- */
+.brand{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;
+  padding-bottom:18px;border-bottom:1px solid var(--line-soft);margin-bottom:16px}
+.brand img{width:108px;height:108px;border-radius:50%;
+  box-shadow:0 0 0 1px var(--line),0 0 34px -6px rgba(77,159,255,.55);animation:pulse 6s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 1px var(--line),0 0 30px -8px rgba(77,159,255,.4)}
+  50%{box-shadow:0 0 0 1px rgba(77,159,255,.4),0 0 44px -6px rgba(77,159,255,.7)}}
+.brand h1{font-size:14px;letter-spacing:.16em;margin:0;color:#eaf1ff;font-weight:800}
+.brand .sub{font-size:10.5px;color:var(--muted);letter-spacing:.1em}
+
+.sec-title{font-size:11px;color:var(--dragon);letter-spacing:.16em;margin:18px 0 10px;
+  display:flex;align-items:center;gap:8px}
+.sec-title:first-of-type{margin-top:0}
+.sec-title::before{content:"//";color:var(--muted)}
+
+.ops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.op{display:flex;gap:9px;align-items:center;font-size:12px;cursor:pointer;padding:5px 7px;border-radius:5px;
+  border:1px solid transparent;transition:.14s}
+.op:hover{border-color:var(--line);background:var(--surface)}
+.op .d{color:var(--cyan);flex:0 0 auto;font-size:11px}
+.op .t{color:#d7deec;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.op .dot-cat{width:6px;height:6px;border-radius:50%;flex:0 0 auto;background:var(--c,var(--muted))}
+.op-empty{font-size:11.5px;color:var(--muted);padding:4px 0}
+
+/* tag filter toggles */
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--void);
+  border:1px solid var(--line);border-radius:20px;padding:4px 10px;cursor:pointer;transition:.14s;user-select:none}
+.tag:hover{border-color:var(--dragon-dim)}
+.tag.on{color:#eaf1ff;border-color:var(--dragon-dim);background:rgba(77,159,255,.12)}
+.tag.on::before{content:"● ";color:var(--dragon);font-size:9px}
+.tag.off::before{content:"○ ";font-size:9px}
+.tag-actions{display:flex;gap:8px;margin-top:8px}
+.tag-actions button{background:none;border:none;color:var(--muted);font-family:var(--mono);font-size:10.5px;
+  cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px}
+.tag-actions button:hover{color:var(--dragon)}
+
+.legend{display:flex;flex-direction:column;gap:8px}
+.leg{display:flex;align-items:center;gap:9px;font-size:11.5px;color:var(--muted)}
+.leg i{width:9px;height:9px;border-radius:2px;display:inline-block;background:var(--c)}
+
+.meta{font-size:11px;color:var(--muted);margin-top:16px}
+.meta .count{color:var(--text)}
+.databtns{display:flex;gap:8px;margin:8px 0 2px}
+.databtns .btn{flex:1;justify-content:center;font-size:12px;padding:8px 6px}
+#fileInput{display:none}
+
+/* ---- 8. COMMAND LINE ----------------------------------------------- */
+.console{border-top:1px solid var(--line);background:var(--void);padding:12px clamp(14px,2.4vw,26px)}
+.log{max-height:150px;overflow-y:auto;font-size:12px;margin-bottom:8px;display:flex;flex-direction:column;gap:2px}
+.log:empty{display:none}
+.log .l{white-space:pre-wrap;word-break:break-word}
+.log .l.sys{color:var(--muted)}
+.log .l.ok{color:var(--cyan)}
+.log .l.err{color:var(--cat-security)}
+.log .l.echo{color:var(--dragon)}
+.cmdrow{display:flex;align-items:center;gap:8px}
+.prompt{color:var(--cyan);font-size:13px;white-space:nowrap}
+.prompt b{color:var(--dragon)}
+#cmd{flex:1;background:transparent;border:none;outline:none;color:#eaf1ff;font-family:var(--mono);
+  font-size:13px;caret-color:var(--cyan)}
+#cmd::placeholder{color:#39414f}
+.log::-webkit-scrollbar,.chips::-webkit-scrollbar{width:6px}
+.log::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+
+/* ---- 9. OVERLAYS --------------------------------------------------- */
+.overlay{position:fixed;inset:0;z-index:40;background:rgba(3,4,7,.72);backdrop-filter:blur(2px);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.on{display:flex}
+.modal{width:100%;max-width:440px;background:var(--surface);border:1px solid var(--dragon-dim);border-radius:10px;
+  box-shadow:0 0 60px -10px rgba(77,159,255,.4);overflow:hidden}
+.mhead{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#12161f,#0c0f16)}
+.mhead .mt{color:var(--muted);font-size:12.5px}
+.mhead .mt b{color:var(--dragon)}
+.mbody{padding:18px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;color:var(--muted);letter-spacing:.1em;margin-bottom:6px}
+.field label::before{content:"$ ";color:var(--dragon)}
+.input{width:100%;background:var(--void);border:1px solid var(--line);border-radius:6px;color:#eaf1ff;
+  font-family:var(--mono);font-size:13px;padding:9px 11px;outline:none;transition:.14s}
+.input:focus{border-color:var(--dragon);box-shadow:0 0 0 3px rgba(77,159,255,.12)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.catbtn{font-family:var(--mono);font-size:12px;color:var(--muted);background:var(--void);border:1px solid var(--line);
+  border-radius:6px;padding:9px;cursor:pointer;transition:.14s;display:flex;align-items:center;gap:8px}
+.catbtn i{width:9px;height:9px;border-radius:2px;background:var(--c)}
+.catbtn.sel{color:#fff;border-color:var(--c)}
+.mfoot{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+
+/* event-detail overlay */
+.detail-accent{height:3px;background:var(--c,var(--dragon))}
+.drow{display:flex;gap:10px;font-size:12.5px;margin-bottom:9px}
+.drow .k{color:var(--muted);flex:0 0 84px}
+.drow .v{color:#eaf1ff;flex:1}
+.dtags{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.dtags span{font-size:10.5px;color:var(--dragon);border:1px solid var(--line);border-radius:12px;padding:2px 8px}
+.mnote{font-size:11px;color:var(--muted)}
+
+.evlist{display:flex;flex-direction:column;gap:8px}
+.evitem{display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--line);border-radius:6px;
+  border-left-width:3px;border-left-color:var(--c,var(--muted));background:var(--void);cursor:pointer;transition:.14s}
+.evitem:hover{border-color:var(--dragon-dim)}
+.evitem .info{flex:1;min-width:0}
+.evitem .info .ti{color:#eaf1ff;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.evitem .info .me{color:var(--muted);font-size:11px}
+.del{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:5px;padding:5px 9px;
+  font-family:var(--mono);font-size:11px;cursor:pointer;transition:.14s;flex:0 0 auto}
+.del:hover{border-color:var(--cat-security);color:var(--cat-security)}
+
+/* ---- 10. FOOTER / RESPONSIVE / MOTION ------------------------------ */
+.foot{text-align:center;color:var(--muted);font-size:11px;padding:16px 10px 4px;position:relative;z-index:2}
+.foot b{color:var(--dragon-dim)}
+
+@media (max-width:880px){
+  .body{grid-template-columns:1fr}
+  .calpane{border-right:none;border-bottom:1px solid var(--line-soft)}
+  .tclock{display:none}
+}
+@media (max-width:520px){
+  .cell{padding:4px 4px 3px}
+  .chip{font-size:9px;padding:1px 4px}
+  .dow span{font-size:9px;letter-spacing:.06em}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  #rain{display:none}
+}

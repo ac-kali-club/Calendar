@@ -1,0 +1,50 @@
+# =====================================================================
+#  KALI CLUB CALENDAR — master config  (events/index.yaml)
+# ---------------------------------------------------------------------
+#  This is the "control panel". You'll rarely touch it.
+# =====================================================================
+
+# Where the event files live, relative to index.html.
+# Change to an absolute path ("/events/") or a full URL if you host
+# the YAML somewhere else. Must end with a slash.
+base: events/
+
+# Term boundaries. Recurring (weekly) events only appear between these.
+term:
+  start: 2026-09-08     # first week of classes (Labour Day was Sep 7)
+  end:   2026-12-11     # last week before finals
+
+# Weeks with no classes — recurring events skip these ranges.
+breaks:
+  - start: 2026-10-26
+    end:   2026-10-30   # Fall study break
+
+# Month files to warm up on load. The app also fetches
+# events/<YYYY-MM>.yaml automatically as you navigate, so this list is
+# optional — add a line when you create a new month file.
+months:
+  - 2026-09
+  - 2026-10
+  - 2026-11
+  - 2026-12
+
+# Master tag list. Each becomes a toggle in the sidebar "filters".
+# 'label' is what shows on the button; the tag name is what you put in
+# an event's `tags:` list. Extra tags found in events are added too.
+tags:
+  - name: cst8248
+    label: CST8248 Cloud
+  - name: cst8249
+    label: CST8249 Security
+  - name: cst8317
+    label: CST8317 Wireless
+  - name: cst8378
+    label: CST8378
+  - name: lecture
+    label: Lectures
+  - name: lab
+    label: Labs
+  - name: exam
+    label: Exams & SBAs
+  - name: club
+    label: Kali Club
