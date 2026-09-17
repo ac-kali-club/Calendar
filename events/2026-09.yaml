@@ -15,11 +15,11 @@
 # =====================================================================
 
 events:
-  - title: CyberSci Regionals
-    date:  2026-11-21
-    time:  "08:00"
-    category: ctf
-    location: TBD
-    tags: [ctf, club]
-    note: Tentative time. More info coming soon!
+  - title: ClubsFest
+    date:  2026-09-29
+    time:  "11:30"
+    category: social
+    location: E Building
+    tags: [social, club]
+    note: We will have a table, swing by to learn what the club is about!
 

@@ -19,6 +19,7 @@ breaks:
 # demand as you navigate, so add a line here only to warm one up front.
 # Start a month by copying events/TEMPLATE.yaml to events/<YYYY-MM>.yaml
 months:
+  - "2026-09"
   - "2026-11"
 
 # Filter toggles. 'name' is what you put in an event's tags: list;
