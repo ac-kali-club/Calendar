@@ -73,11 +73,9 @@
           <div class="legend" id="legend"></div>
 
           <div class="meta"><span class="count" id="total">0</span> events in view</div>
-          <div class="databtns">
-            <button class="btn" id="importBtn">import .yaml</button>
-            <button class="btn" id="exportBtn">export .yaml</button>
-          </div>
-          <input type="file" id="fileInput" accept=".yaml,.yml,.md,.markdown,.txt">
+
+          <div class="sec-title">repo</div>
+          <a class="repolink" href="https://github.com/ac-kali-club" target="_blank" rel="noopener">&gt; edit events on GitHub</a>
         </div>
       </div>
 
@@ -86,50 +84,19 @@
         <div class="log" id="log"></div>
         <div class="cmdrow">
           <span class="prompt"><b>kali@algonquin</b>:~$</span>
-          <input id="cmd" autocomplete="off" spellcheck="false" placeholder="type 'help' — e.g. goto 2026-10, filter cst8249 off, add ...">
+          <input id="cmd" autocomplete="off" spellcheck="false" placeholder="type 'help' — e.g. goto 2026-10, filter ctf off, ls">
         </div>
       </div>
     </div>
   </div>
 
   <div class="foot">
-    events loaded from <b>/events/*.yaml</b> &middot; personal additions saved in this browser &middot; hack the planet
+    events loaded from <b>/events/*.yaml</b> &middot;
+    <a href="https://github.com/ac-kali-club" target="_blank" rel="noopener">github.com/ac-kali-club</a>
+    &middot; hack the planet
   </div>
 
   <!-- ============ OVERLAYS ============ -->
-
-  <!-- add a personal event -->
-  <div class="overlay" id="addOverlay">
-    <div class="modal">
-      <div class="mhead">
-        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
-        <div class="mt"><b>./new-event</b></div>
-      </div>
-      <div class="mbody">
-        <div class="field"><label>title</label><input class="input" id="fTitle" placeholder="e.g. Study session"></div>
-        <div class="row2">
-          <div class="field"><label>date</label><input class="input" id="fDate" type="date"></div>
-          <div class="field"><label>time</label><input class="input" id="fTime" type="time"></div>
-        </div>
-        <div class="field"><label>category</label>
-          <div class="cats" id="cats">
-            <button class="catbtn cat-lecture" data-cat="lecture"><i></i>Lecture</button>
-            <button class="catbtn cat-lab" data-cat="lab"><i></i>Lab</button>
-            <button class="catbtn cat-exam" data-cat="exam"><i></i>Exam / Due</button>
-            <button class="catbtn cat-security" data-cat="security"><i></i>CTF / Security</button>
-            <button class="catbtn cat-club" data-cat="club"><i></i>Club</button>
-            <button class="catbtn cat-social" data-cat="social"><i></i>Social</button>
-          </div>
-        </div>
-        <div class="field"><label>tags <span style="color:#39414f">(comma-separated)</span></label><input class="input" id="fTags" placeholder="cst8249, study"></div>
-        <div class="field"><label>note <span style="color:#39414f">(optional)</span></label><input class="input" id="fNote" placeholder="room, details..."></div>
-        <div class="mfoot">
-          <button class="btn" id="addCancel">cancel</button>
-          <button class="btn accent" id="addSave">./commit</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- list a day's events -->
   <div class="overlay" id="dayOverlay">
@@ -141,8 +108,7 @@
       <div class="mbody">
         <div class="evlist" id="evlist"></div>
         <div class="mfoot">
-          <button class="btn" id="dayClose">close</button>
-          <button class="btn accent" id="dayAdd">+ add event</button>
+          <button class="btn accent" id="dayClose">close</button>
         </div>
       </div>
     </div>

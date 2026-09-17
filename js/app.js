@@ -1,21 +1,23 @@
 /* =====================================================================
-   app.js  —  the UI layer
+   app.js  —  the UI layer  (read-only viewer)
    ---------------------------------------------------------------------
    Ties yaml.js + events.js to the DOM: draws the calendar, handles the
-   tag filters, the three overlays, personal events (saved locally),
-   and the command line.
+   tag filters, the day + event overlays, and the command line.
 
-   Reading order if you're new to the file:
-     STATE  → STORAGE → DATA LOADING → RENDER → FILTERS → OVERLAYS
-     → PERSONAL EVENTS → NAV → TERMINAL → BOOT/RAIN/CLOCK → INIT
+   Events come ONLY from the YAML files under /events/ — there is no
+   "add" from the page. To change what's on the calendar, edit the YAML
+   (see the GitHub repo) and hit reload.
+
+   Reading order:
+     STATE → DATA LOADING → RENDER → FILTERS → OVERLAYS → NAV
+     → TERMINAL → BOOT/RAIN/CLOCK → INIT
    ===================================================================== */
 (function () {
   "use strict";
 
-  var E = window.KaliEvents, Y = window.KaliYAML;
+  var E = window.KaliEvents;
   var MONTHS = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY",
                 "AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
-  var STORE_KEY = "kaliclub.personal.v1";
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion:reduce)").matches;
 
   /* ---- STATE ---- */
@@ -23,11 +25,9 @@
   var config = { term:null, breaks:[], months:[], tags:[] };
   var rules = [];                 // recurring rules
   var monthCache = {};            // { "2026-09": [events from file] }
-  var personal = loadPersonal();  // [events] from localStorage
   var tagOrder = [];              // ordered list of known tag names
   var tagLabels = {};             // name -> pretty label
   var enabled = {};               // name -> bool (filter state)
-  var selCat = "lecture";         // add-modal category selection
 
   /* ---- DOM refs ---- */
   var $ = function (id) { return document.getElementById(id); };
@@ -35,17 +35,9 @@
       mName=$("mName"), mYear=$("mYear"), total=$("total"),
       logEl=$("log"), cmd=$("cmd");
 
-  /* ---- STORAGE (personal events only) ---- */
-  function loadPersonal() {
-    try { var r = localStorage.getItem(STORE_KEY); if (r) return JSON.parse(r); } catch (e) {}
-    return [];
-  }
-  function savePersonal() {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify(personal)); }
-    catch (e) { logline("could not save locally (private mode?)", "err"); }
-  }
-
   /* ---- DATA LOADING ---- */
+  function ym(y, m) { return y + "-" + (m < 9 ? "0" : "") + (m + 1); }
+
   function ensureMonth(ym) {
     // Load a month's file once, then cache it. Re-render when it arrives.
     if (monthCache[ym]) return Promise.resolve(monthCache[ym]);
@@ -57,15 +49,12 @@
       return list;
     });
   }
-  function ym(y, m) { return y + "-" + (m < 9 ? "0" : "") + (m + 1); }
 
-  /* ---- gather every event for the currently viewed month ---- */
+  // every event for the currently viewed month
   function eventsForView() {
     var y = view.getFullYear(), m = view.getMonth(), key = ym(y, m);
     var out = E.expandRecurring(rules, y, m, config.term, config.breaks);
-    out = out.concat(monthCache[key] || []);
-    out = out.concat(personal.filter(function (e) { return e.date.slice(0,7) === key; }));
-    return out;
+    return out.concat(monthCache[key] || []);
   }
 
   // An event's effective tags = its tags, or [category] if it has none.
@@ -152,13 +141,12 @@
   function renderLegend(shown) {
     var cats = {};
     shown.forEach(function (e) { cats[e.category] = true; });
-    var names = { lecture:"lecture", lab:"lab", exam:"exam / due", security:"CTF / security",
-                  club:"Kali Club", social:"social", other:"other" };
+    var names = { meeting:"meeting", ctf:"CTF", workshop:"workshop",
+                  social:"social", club:"club", other:"other" };
     legend.innerHTML = "";
     Object.keys(cats).forEach(function (c) {
       var row = document.createElement("div"); row.className = "leg cat-" + c;
-      var i = document.createElement("i");
-      row.appendChild(i);
+      row.appendChild(document.createElement("i"));
       row.appendChild(document.createTextNode(" " + (names[c] || c)));
       legend.appendChild(row);
     });
@@ -174,13 +162,12 @@
         tagLabels[name] = t.label || name;
       });
     }
-    // Discover any tags present in loaded data that we haven't seen yet.
+    // Discover any tags present in loaded data we haven't seen yet.
     var seen = {};
     rules.forEach(function (r){ (r.tags||[]).forEach(function(t){ seen[t]=true; }); });
     Object.keys(monthCache).forEach(function (k) {
       monthCache[k].forEach(function (e){ effTags(e).forEach(function(t){ seen[t]=true; }); });
     });
-    personal.forEach(function (e){ effTags(e).forEach(function(t){ seen[t]=true; }); });
     Object.keys(seen).forEach(function (t) {
       if (enabled[t] === undefined) { tagOrder.push(t); enabled[t] = true; tagLabels[t] = tagLabels[t]||t; }
     });
@@ -189,6 +176,10 @@
 
   function renderTagBar() {
     tagbar.innerHTML = "";
+    if (!tagOrder.length) {
+      var none = document.createElement("div"); none.className = "op-empty";
+      none.textContent = "// no tags yet"; tagbar.appendChild(none); return;
+    }
     tagOrder.forEach(function (name) {
       var b = document.createElement("div");
       b.className = "tag " + (enabled[name] ? "on" : "off");
@@ -207,7 +198,7 @@
     return "all day";
   }
 
-  // single-event detail
+  // single-event detail (opens when you click an event)
   var eventOverlay = $("eventOverlay"), detailBody = $("detailBody"), detailAccent = $("detailAccent");
   function openEvent(e) {
     detailAccent.style.background = "var(--cat-" + e.category + ", var(--dragon))";
@@ -216,8 +207,7 @@
       ["when", dt.toDateString() + " \u00b7 " + timeLabel(e)],
       ["where", e.location || "\u2014"],
       ["type", e.category],
-      ["source", e.source === "recurring" ? "weekly (recurring.yaml)" :
-                 e.source === "personal" ? "personal (this browser)" : "events file"]
+      ["source", e.source === "recurring" ? "weekly (recurring.yaml)" : "events file"]
     ];
     var html = '<div class="drow"><div class="k">title</div><div class="v">' + escapeHtml(e.title) + "</div></div>";
     rows.forEach(function (r) {
@@ -228,19 +218,15 @@
         e.tags.map(function (t){ return "<span>" + escapeHtml(t) + "</span>"; }).join("") + "</div></div></div>";
     }
     if (e.note) html += '<div class="drow"><div class="k">note</div><div class="v">' + escapeHtml(e.note) + "</div></div>";
-    html += '<div class="mfoot">';
-    if (e.source === "personal") html += '<button class="btn" id="detDel">delete</button>';
-    html += '<button class="btn accent" id="detClose">close</button></div>';
+    html += '<div class="mfoot"><button class="btn accent" id="detClose">close</button></div>';
     detailBody.innerHTML = html;
     $("detClose").addEventListener("click", closeOverlays);
-    if (e.source === "personal") $("detDel").addEventListener("click", function () { removePersonal(e.id); closeOverlays(); });
     eventOverlay.classList.add("on");
   }
 
   // day list
-  var dayOverlay = $("dayOverlay"), evlist = $("evlist"), curDay = null;
+  var dayOverlay = $("dayOverlay"), evlist = $("evlist");
   function openDay(iso) {
-    curDay = iso;
     $("dayDate").textContent = new Date(iso + "T00:00:00").toDateString();
     var list = eventsForView().filter(isVisible).filter(function (e){ return e.date === iso; })
       .sort(function (a,b){ return (a.time||"99").localeCompare(b.time||"99"); });
@@ -258,92 +244,24 @@
     dayOverlay.classList.add("on");
   }
   $("dayClose").addEventListener("click", closeOverlays);
-  $("dayAdd").addEventListener("click", function () { closeOverlays(); openAdd(curDay); });
-
-  // add personal event
-  var addOverlay = $("addOverlay");
-  function setCat(c) {
-    selCat = c;
-    Array.prototype.forEach.call(document.querySelectorAll(".catbtn"), function (b) {
-      b.classList.toggle("sel", b.getAttribute("data-cat") === c);
-    });
-  }
-  $("cats").addEventListener("click", function (e) {
-    var b = e.target.closest(".catbtn"); if (b) setCat(b.getAttribute("data-cat"));
-  });
-  function openAdd(iso) {
-    iso = iso || E.isoOf(new Date());
-    $("fTitle").value=""; $("fNote").value=""; $("fTime").value=""; $("fTags").value="";
-    $("fDate").value = iso; setCat("lecture");
-    addOverlay.classList.add("on");
-    setTimeout(function(){ $("fTitle").focus(); }, 30);
-  }
-  $("addCancel").addEventListener("click", closeOverlays);
-  $("addSave").addEventListener("click", function () {
-    var t = $("fTitle").value.trim(); if (!t) { $("fTitle").focus(); return; }
-    addPersonal({ title:t, date:$("fDate").value, time:$("fTime").value, category:selCat,
-                  tags:$("fTags").value, note:$("fNote").value.trim() });
-    closeOverlays();
-  });
 
   function closeOverlays() {
-    [addOverlay, dayOverlay, eventOverlay].forEach(function (o){ o.classList.remove("on"); });
+    [dayOverlay, eventOverlay].forEach(function (o){ o.classList.remove("on"); });
   }
   // click backdrop or Esc closes
-  [addOverlay, dayOverlay, eventOverlay].forEach(function (o) {
+  [dayOverlay, eventOverlay].forEach(function (o) {
     o.addEventListener("click", function (e) { if (e.target === o) closeOverlays(); });
   });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeOverlays(); });
 
-  /* ---- PERSONAL EVENTS (localStorage overlay) ---- */
-  function addPersonal(o) {
-    var ev = E.normalizeEvent(o, "personal");
-    if (!ev) { logline("need at least a title and a valid date", "err"); return; }
-    personal.push(ev); savePersonal(); refreshTags(); render();
-    var d = new Date(ev.date + "T00:00:00"); if (!isNaN(d)) goto(d);
-    logline("committed [" + ev.id + "]: " + ev.title + " @ " + ev.date, "ok");
-  }
-  function removePersonal(id) {
-    var e = personal.find(function (x){ return x.id === id; });
-    personal = personal.filter(function (x){ return x.id !== id; });
-    savePersonal(); render();
-    if (e) logline("removed: " + e.title, "ok");
-  }
-
-  function exportYaml() {
-    try {
-      var blob = new Blob([Y.stringifyEvents(personal)], { type:"text/yaml" });
-      var url = URL.createObjectURL(blob), a = document.createElement("a");
-      a.href = url; a.download = "my-events.yaml";
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
-      logline("exported " + personal.length + " personal event(s) \u2192 my-events.yaml", "ok");
-    } catch (e) { logline("export not available here \u2014 use the hosted copy", "err"); }
-  }
-  $("importBtn").addEventListener("click", function () { $("fileInput").click(); });
-  $("exportBtn").addEventListener("click", exportYaml);
-  $("fileInput").addEventListener("change", function () {
-    var f = this.files && this.files[0]; if (!f) return;
-    var reader = new FileReader();
-    reader.onload = function () {
-      var doc = Y.parse(reader.result);
-      var list = (doc && doc.events) ? doc.events : (Array.isArray(doc) ? doc : []);
-      var added = 0;
-      list.forEach(function (o) { var ev = E.normalizeEvent(o, "personal"); if (ev) { personal.push(ev); added++; } });
-      savePersonal(); refreshTags(); render();
-      logline("imported " + added + " event(s) from " + f.name + " (saved locally)", added ? "ok" : "err");
-    };
-    reader.readAsText(f); this.value = "";
-  });
-
   /* ---- NAV ---- */
-  function goto(d) { view = new Date(d.getFullYear(), d.getMonth(), 1); ensureMonth(ym(view.getFullYear(), view.getMonth())); render(); }
+  function goto(d) { view = new Date(d.getFullYear(), d.getMonth(), 1); afterNav(); }
+  function afterNav() { ensureMonth(ym(view.getFullYear(), view.getMonth())); render(); }
   $("prev").addEventListener("click", function () { view.setMonth(view.getMonth()-1); afterNav(); });
   $("next").addEventListener("click", function () { view.setMonth(view.getMonth()+1); afterNav(); });
   $("todayBtn").addEventListener("click", function () { goto(new Date()); });
   $("tagAll").addEventListener("click", function () { setAllTags(true); });
   $("tagNone").addEventListener("click", function () { setAllTags(false); });
-  function afterNav() { ensureMonth(ym(view.getFullYear(), view.getMonth())); render(); }
 
   /* ---- TERMINAL ---- */
   function logline(txt, cls) {
@@ -357,11 +275,10 @@
     "  today | next | prev navigate",
     "  tags                list tags + on/off state",
     "  filter <tag> on|off toggle a tag (or: filter all|none)",
-    "  add \"Title\" DATE [HH:MM] [category] [note...]",
-    "  rm <id>             delete a personal event",
     "  reload              re-fetch the /events/ files from the server",
-    "  export | import     personal events to/from a .yaml file",
-    "  banner | clear | whoami"
+    "  banner | clear | whoami",
+    "",
+    "  events are edited in the YAML files (see the GitHub repo)."
   ];
   function args(s) { var o=[],re=/"([^"]*)"|(\S+)/g,m; while((m=re.exec(s))) o.push(m[1]!==undefined?m[1]:m[2]); return o; }
 
@@ -373,7 +290,7 @@
     if (c === "help") HELP.forEach(function (x){ logline(x, "sys"); });
     else if (c === "clear") logEl.innerHTML = "";
     else if (c === "banner") banner();
-    else if (c === "whoami") logline("root (uid=0) — with great power comes great responsibility", "ok");
+    else if (c === "whoami") logline("root (uid=0) — mundus noster domain", "ok");
     else if (c === "today") { goto(new Date()); logline("→ current month", "ok"); }
     else if (c === "next") { view.setMonth(view.getMonth()+1); afterNav(); logline("→ " + MONTHS[view.getMonth()] + " " + view.getFullYear(), "ok"); }
     else if (c === "prev") { view.setMonth(view.getMonth()-1); afterNav(); logline("→ " + MONTHS[view.getMonth()] + " " + view.getFullYear(), "ok"); }
@@ -388,8 +305,8 @@
       tagOrder.forEach(function (t){ logline("  [" + (enabled[t] ? "x" : " ") + "] " + t, ""); });
     }
     else if (c === "filter") {
-      if (a[1] === "all") return setAllTags(true), logline("all tags on", "ok");
-      if (a[1] === "none") return setAllTags(false), logline("all tags off", "ok");
+      if (a[1] === "all") { setAllTags(true); return logline("all tags on", "ok"); }
+      if (a[1] === "none") { setAllTags(false); return logline("all tags off", "ok"); }
       var tag = a[1], st = (a[2]||"toggle").toLowerCase();
       if (!tag || enabled[tag] === undefined) return logline("unknown tag: " + tag + " (try 'tags')", "err");
       enabled[tag] = st === "on" ? true : st === "off" ? false : !enabled[tag];
@@ -400,29 +317,10 @@
       var list = (scope ? allLoaded().filter(function(e){return e.date.indexOf(scope)===0;}) : eventsForView())
         .slice().sort(function (x,y){ return (x.date+(x.time||"")).localeCompare(y.date+(y.time||"")); });
       if (!list.length) return logline("no events found", "sys");
-      list.forEach(function (e){ logline("  [" + e.id + "] " + e.date + " " + (e.time||"--:--") + "  " + e.category.padEnd(9) + " " + e.title, ""); });
+      list.forEach(function (e){ logline("  " + e.date + " " + (e.time||"--:--") + "  " + e.category.padEnd(9) + " " + e.title, ""); });
       logline(list.length + " event(s)", "sys");
     }
-    else if (c === "add") {
-      var t = a[1]; if (!t) return logline('usage: add "Title" YYYY-MM-DD [HH:MM] [category] [note]', "err");
-      var date = a[2]; if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return logline("need a date: YYYY-MM-DD", "err");
-      var rest = a.slice(3), time="", cat="lecture", note=[];
-      var known = { lecture:1, lab:1, exam:1, security:1, club:1, social:1, other:1 };
-      rest.forEach(function (tok) {
-        if (/^\d{1,2}:\d{2}$/.test(tok) && !time) time = tok;
-        else if (known[tok.toLowerCase()] && cat === "lecture" && !note.length) cat = tok.toLowerCase();
-        else note.push(tok);
-      });
-      addPersonal({ title:t, date:date, time:time, category:cat, note:note.join(" ") });
-    }
-    else if (c === "rm") {
-      if (!a[1]) return logline("usage: rm <id>", "err");
-      if (personal.some(function(e){return e.id===a[1];})) removePersonal(a[1]);
-      else logline("no personal event with id " + a[1] + " (file/recurring events are edited in the .yaml)", "err");
-    }
     else if (c === "reload") { logline("re-fetching /events/ ...", "sys"); reload(); }
-    else if (c === "export") exportYaml();
-    else if (c === "import") { $("fileInput").click(); logline("select a .yaml file ...", "sys"); }
     else logline("command not found: " + c + " (try 'help')", "err");
   }
   cmd.addEventListener("keydown", function (e) { if (e.key === "Enter") { run(cmd.value); cmd.value = ""; } });
@@ -430,11 +328,10 @@
   function allLoaded() {
     var out = [];
     Object.keys(monthCache).forEach(function (k){ out = out.concat(monthCache[k]); });
-    // expand recurring across all cached months for a fuller `ls`
     Object.keys(monthCache).forEach(function (k) {
       var p = k.split("-"); out = out.concat(E.expandRecurring(rules, +p[0], +p[1]-1, config.term, config.breaks));
     });
-    return out.concat(personal);
+    return out;
   }
 
   function banner() {
@@ -474,7 +371,6 @@
 
   function boot(done) {
     var el = $("boottext"), scr = $("boot");
-    function finish() { scr.style.display = "none"; done(); }
     scr.addEventListener("click", function () { scr.style.display = "none"; });
     if (reduce) { scr.style.display = "none"; banner(); done(); return; }
     var lines = [
@@ -518,10 +414,10 @@
     render();                                   // draw empty grid immediately
     if (location.protocol === "file:") {
       logline("heads-up: opened as a local file, so /events/*.yaml can't be fetched.", "sys");
-      logline("serve the folder over http (e.g. `python3 -m http.server`) to load your schedule.", "sys");
+      logline("serve the folder over http (e.g. `python3 -m http.server`) to load events.", "sys");
     }
     boot(function () {
-      logline("type 'help' for commands, click a day to add, click an event for details.", "sys");
+      logline("type 'help' for commands. click a day or an event to see details.", "sys");
       reload();                                 // fetch config + recurring + current month
     });
   }

@@ -1,92 +1,19 @@
 # =====================================================================
 #  WEEKLY / RECURRING EVENTS  (events/recurring.yaml)
 # ---------------------------------------------------------------------
-#  Each rule repeats every week within the term (see index.yaml) and
-#  automatically skips break weeks.
+#  No recurring events yet. Add rules under `recurring:` — each repeats
+#  weekly within the term (see index.yaml) and skips break weeks.
 #
-#  Fields:
-#    title      (required)
-#    weekday    mon | tue | wed | thu | fri | sat | sun   (required)
-#    time       "HH:MM"   (quote it so YAML keeps the colon)
-#    end_time   "HH:MM"
-#    category   lecture | lab | exam | security | club | social | other
-#    location   room
-#    tags       [a, b]  — used by the sidebar filters
-#    start/end  optional YYYY-MM-DD to limit a rule's range
+#  Example (delete the leading '#' on the block to activate):
+#
+#  recurring:
+#    - title: Kali Club — Weekly Meet
+#      weekday: wed          # mon tue wed thu fri sat sun
+#      time: "17:00"
+#      end_time: "18:00"
+#      category: meeting      # meeting | ctf | workshop | social | club | other
+#      location: T119
+#      tags: [club, meeting]
 # =====================================================================
 
-recurring:
-  # ---- Austin's Fall 2026 class schedule ----
-  - title: CST8378 — Lab
-    weekday: mon
-    time: "09:00"
-    end_time: "11:00"
-    category: lab
-    location: WT113
-    tags: [cst8378, lab]
-
-  - title: CST8249 — Network Security (Theory)
-    weekday: mon
-    time: "16:00"
-    end_time: "18:00"
-    category: lecture
-    location: WB455
-    tags: [cst8249, lecture]
-
-  - title: CST8249 — Network Security (Lab)
-    weekday: tue
-    time: "12:00"
-    end_time: "14:00"
-    category: lab
-    location: WT114
-    tags: [cst8249, lab]
-
-  - title: CST8248 — Cloud Infrastructure (Lab)
-    weekday: wed
-    time: "17:00"
-    end_time: "19:00"
-    category: lab
-    location: WT114
-    tags: [cst8248, lab]
-
-  - title: CST8317 — Wireless Networks (Lab)
-    weekday: thu
-    time: "08:00"
-    end_time: "10:00"
-    category: lab
-    location: WT115
-    tags: [cst8317, lab]
-
-  - title: CST8378 — Theory
-    weekday: thu
-    time: "13:00"
-    end_time: "15:00"
-    category: lecture
-    location: WT130
-    tags: [cst8378, lecture]
-
-  - title: CST8317 — Wireless Networks (Theory)
-    weekday: fri
-    time: "15:00"
-    end_time: "17:00"
-    category: lecture
-    location: A1119
-    tags: [cst8317, lecture]
-
-  - title: CST8248 — Cloud Infrastructure (Theory)
-    weekday: fri
-    time: "17:00"
-    end_time: "19:00"
-    category: lecture
-    location: A1119
-    tags: [cst8248, lecture]
-
-  # ---- club example (delete or edit for your real meeting time) ----
-  - title: Kali Club — Weekly Meet
-    weekday: wed
-    time: "12:00"
-    end_time: "13:00"
-    category: club
-    location: TBD
-    tags: [club]
-    note: New members welcome — bring a laptop.
+recurring: []

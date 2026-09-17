@@ -1,50 +1,35 @@
 # =====================================================================
 #  KALI CLUB CALENDAR — master config  (events/index.yaml)
-# ---------------------------------------------------------------------
-#  This is the "control panel". You'll rarely touch it.
 # =====================================================================
 
-# Where the event files live, relative to index.html.
-# Change to an absolute path ("/events/") or a full URL if you host
-# the YAML somewhere else. Must end with a slash.
+# Where the event files live, relative to index.html. Must end "/".
 base: events/
 
-# Term boundaries. Recurring (weekly) events only appear between these.
+# Term boundaries — recurring events only repeat between these dates.
 term:
-  start: 2026-09-08     # first week of classes (Labour Day was Sep 7)
-  end:   2026-12-11     # last week before finals
+  start: 2026-09-08
+  end:   2026-12-11
 
-# Weeks with no classes — recurring events skip these ranges.
+# Weeks with no meetings — recurring events skip these ranges.
 breaks:
   - start: 2026-10-26
-    end:   2026-10-30   # Fall study break
+    end:   2026-10-30
 
-# Month files to warm up on load. The app also fetches
-# events/<YYYY-MM>.yaml automatically as you navigate, so this list is
-# optional — add a line when you create a new month file.
-months:
-  - 2026-09
-  - 2026-10
-  - 2026-11
-  - 2026-12
+# Month files to preload. The app also loads events/<YYYY-MM>.yaml on
+# demand as you navigate, so add a line here only to warm one up front.
+# Start a month by copying events/TEMPLATE.yaml to events/<YYYY-MM>.yaml
+months: []
 
-# Master tag list. Each becomes a toggle in the sidebar "filters".
-# 'label' is what shows on the button; the tag name is what you put in
-# an event's `tags:` list. Extra tags found in events are added too.
+# Filter toggles. 'name' is what you put in an event's tags: list;
+# 'label' is the button text. Any tag used in an event shows up too.
 tags:
-  - name: cst8248
-    label: CST8248 Cloud
-  - name: cst8249
-    label: CST8249 Security
-  - name: cst8317
-    label: CST8317 Wireless
-  - name: cst8378
-    label: CST8378
-  - name: lecture
-    label: Lectures
-  - name: lab
-    label: Labs
-  - name: exam
-    label: Exams & SBAs
+  - name: meeting
+    label: Meetings
+  - name: ctf
+    label: CTF
+  - name: workshop
+    label: Workshops
+  - name: social
+    label: Social
   - name: club
-    label: Kali Club
+    label: Club

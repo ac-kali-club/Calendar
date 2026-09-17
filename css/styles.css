@@ -35,20 +35,18 @@
 /* Each event has a `category`; the colour comes from here.
    Add a new category by adding a --cat-* var AND a .cat-* rule below. */
 :root{
-  --cat-lecture:#4d9fff;   /* lectures / theory   */
-  --cat-lab:#35d07f;       /* hands-on labs       */
-  --cat-exam:#ffb43d;      /* exams, SBAs, due    */
-  --cat-security:#ff4d5e;  /* CTF / offensive     */
-  --cat-club:#b980ff;      /* Kali Club events    */
+  --cat-meeting:#4d9fff;   /* club meetings       */
+  --cat-ctf:#ff4d5e;       /* CTF / offensive     */
+  --cat-workshop:#2ee6d6;  /* hands-on workshops  */
   --cat-social:#ff8ac4;    /* social / hangout    */
+  --cat-club:#b980ff;      /* general club        */
   --cat-other:#8892a6;     /* everything else     */
 }
-.cat-lecture{--c:var(--cat-lecture)}
-.cat-lab{--c:var(--cat-lab)}
-.cat-exam{--c:var(--cat-exam)}
-.cat-security{--c:var(--cat-security)}
-.cat-club{--c:var(--cat-club)}
+.cat-meeting{--c:var(--cat-meeting)}
+.cat-ctf{--c:var(--cat-ctf)}
+.cat-workshop{--c:var(--cat-workshop)}
 .cat-social{--c:var(--cat-social)}
+.cat-club{--c:var(--cat-club)}
 .cat-other{--c:var(--cat-other)}
 
 /* ---- 3. BASE / BACKGROUND ------------------------------------------ */
@@ -171,9 +169,9 @@ body{
 
 .meta{font-size:11px;color:var(--muted);margin-top:16px}
 .meta .count{color:var(--text)}
-.databtns{display:flex;gap:8px;margin:8px 0 2px}
-.databtns .btn{flex:1;justify-content:center;font-size:12px;padding:8px 6px}
-#fileInput{display:none}
+.repolink{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--cyan);
+  text-decoration:none;padding:5px 0;transition:.14s}
+.repolink:hover{color:var(--dragon);text-shadow:0 0 12px rgba(77,159,255,.45)}
 
 /* ---- 8. COMMAND LINE ----------------------------------------------- */
 .console{border-top:1px solid var(--line);background:var(--void);padding:12px clamp(14px,2.4vw,26px)}
@@ -204,18 +202,6 @@ body{
 .mhead .mt{color:var(--muted);font-size:12.5px}
 .mhead .mt b{color:var(--dragon)}
 .mbody{padding:18px}
-.field{margin-bottom:14px}
-.field label{display:block;font-size:11px;color:var(--muted);letter-spacing:.1em;margin-bottom:6px}
-.field label::before{content:"$ ";color:var(--dragon)}
-.input{width:100%;background:var(--void);border:1px solid var(--line);border-radius:6px;color:#eaf1ff;
-  font-family:var(--mono);font-size:13px;padding:9px 11px;outline:none;transition:.14s}
-.input:focus{border-color:var(--dragon);box-shadow:0 0 0 3px rgba(77,159,255,.12)}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.cats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.catbtn{font-family:var(--mono);font-size:12px;color:var(--muted);background:var(--void);border:1px solid var(--line);
-  border-radius:6px;padding:9px;cursor:pointer;transition:.14s;display:flex;align-items:center;gap:8px}
-.catbtn i{width:9px;height:9px;border-radius:2px;background:var(--c)}
-.catbtn.sel{color:#fff;border-color:var(--c)}
 .mfoot{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
 
 /* event-detail overlay */
@@ -241,6 +227,8 @@ body{
 /* ---- 10. FOOTER / RESPONSIVE / MOTION ------------------------------ */
 .foot{text-align:center;color:var(--muted);font-size:11px;padding:16px 10px 4px;position:relative;z-index:2}
 .foot b{color:var(--dragon-dim)}
+.foot a{color:var(--dragon);text-decoration:none}
+.foot a:hover{text-decoration:underline}
 
 @media (max-width:880px){
   .body{grid-template-columns:1fr}
