@@ -18,7 +18,8 @@ breaks:
 # Month files to preload. The app also loads events/<YYYY-MM>.yaml on
 # demand as you navigate, so add a line here only to warm one up front.
 # Start a month by copying events/TEMPLATE.yaml to events/<YYYY-MM>.yaml
-months: []
+months:
+  - "2026-11"
 
 # Filter toggles. 'name' is what you put in an event's tags: list;
 # 'label' is the button text. Any tag used in an event shows up too.

@@ -1,0 +1,25 @@
+# =====================================================================
+#  MONTH TEMPLATE  (events/TEMPLATE.yaml)
+# ---------------------------------------------------------------------
+#  Copy this file, rename it to the month you want (e.g. 2026-09.yaml),
+#  and add events under `events:`. Only `title` and `date` are required.
+#
+#  events:
+#    - title: CTF practice night
+#      date:  2026-09-17
+#      time:  "18:00"          # optional
+#      category: ctf            # meeting | ctf | workshop | social | club | other
+#      location: T119           # optional
+#      tags: [ctf, club]        # optional — drives the sidebar filters
+#      note: Bring a laptop.    # optional
+# =====================================================================
+
+events:
+  - title: CyberSci Regionals
+    date:  2026-11-21
+    time:  "08:00"
+    category: ctf
+    location: TBD
+    tags: [ctf, club]
+    note: More info coming soon!
+
