@@ -16,4 +16,11 @@
 #      tags: [club, meeting]
 # =====================================================================
 
-recurring: []
+recurring:
+  - title: Kali Club - Weekly Meet
+    weekday: mon
+    time: "14:00"
+    end_time: "16:00"
+    category: meeting
+    location: T114
+    tags: [club, meeting]
