@@ -1,0 +1,31 @@
+# =====================================================================
+#  MONTH TEMPLATE  (events/TEMPLATE.yaml)
+# ---------------------------------------------------------------------
+#  Copy this file, rename it to the month you want (e.g. 2026-09.yaml),
+#  and add events under `events:`. Only `title` and `date` are required.
+#
+#  events:
+#    - title: CTF practice night
+#      date:  2026-09-17
+#      time:  "18:00"          # optional
+#      category: ctf            # meeting | ctf | workshop | social | club | other
+#      location: T119           # optional
+#      tags: [ctf, club]        # optional — drives the sidebar filters
+#      note: Bring a laptop.    # optional
+# =====================================================================
+
+events:
+  - title: CANSEC Day 1
+    date:  2027-06-02
+    time:  "07:00"
+    category: social
+    location: Cohere Centre (Formerly EY Centre), Ottawa ON
+    tags: [social]
+    note: More info available at https://cansec.defenceandsecurity.ca/
+  - title: CANSEC Day 2
+    date:  2027-06-03
+    time:  "07:00"
+    category: social
+    location: Cohere Centre (Formerly EY Centre), Ottawa ON
+    tags: [social]
+    note: More info available at https://cansec.defenceandsecurity.ca/
