@@ -22,6 +22,7 @@ months:
   - "2026-09"
   - "2026-10"
   - "2026-11"
+  - "2026-12"
 
 # Filter toggles. 'name' is what you put in an event's tags: list;
 # 'label' is the button text. Any tag used in an event shows up too.
