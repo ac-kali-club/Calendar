@@ -19,21 +19,21 @@ events:
     date:  2026-12-01
     time:  "07:00"
     category: social
-    location: TBD
+    location: Unknown
     tags: [social]
     note: More info available at https://canada.forum-incyber.com/
   - title: INCYBER Forum Day 2
     date:  2026-12-02
     time:  "07:00"
     category: social
-    location: TBD
+    location: Unknown
     tags: [social]
     note: More info available at https://canada.forum-incyber.com/
   - title: INCYBER Forum Day 3
     date:  2026-12-03
     time:  "07:00"
     category: social
-    location: TBD
+    location: Unknown
     tags: [social]
     note: More info available at https://canada.forum-incyber.com/
   - title: ODTN Ottawa 2026 Volunteer Registration Deadline
