@@ -17,10 +17,27 @@
 # =====================================================================
 
 recurring:
-  - title: Kali Club - Weekly Meet
+  - title: Kali Club - Monday Meet
     weekday: mon
     time: "14:00"
     end_time: "16:00"
     category: meeting
+    location: T110
+    note: Hosted by Mat
+    tags: [club, meeting]
+  - title: Kali Club - Wednesday Meet
+    weekday: mon
+    time: "08:00"
+    end_time: "10:00"
+    category: meeting
     location: T114
+    note: Hosted by Rob
+    tags: [club, meeting]
+  - title: Kali Club - Virtual Meet
+    weekday: mon
+    time: "19:00"
+    end_time: "21:00"
+    category: meeting
+    location: Discord
+    note: Hosted by Austin
     tags: [club, meeting]

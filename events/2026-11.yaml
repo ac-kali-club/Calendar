@@ -15,6 +15,20 @@
 # =====================================================================
 
 events:
+  - title: BSidesOttawa Day 1
+    date:  2026-11-19
+    time:  "07:00"
+    category: social
+    location: 200 Coventry Road Ottawa, ON K1K 4S3
+    tags: [social, ctf]
+    note: View the agenda at https://live.bsidesottawa.ca/BSidesOttawa2026#/agenda
+  - title: BSidesOttawa Day 2
+    date:  2026-11-20
+    time:  "07:00"
+    category: social
+    location: 200 Coventry Road Ottawa, ON K1K 4S3
+    tags: [social, ctf]
+    note: View the agenda at https://live.bsidesottawa.ca/BSidesOttawa2026#/agenda
   - title: CyberSci Regionals
     date:  2026-11-21
     time:  "08:00"

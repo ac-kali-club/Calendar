@@ -1,0 +1,31 @@
+# =====================================================================
+#  MONTH TEMPLATE  (events/TEMPLATE.yaml)
+# ---------------------------------------------------------------------
+#  Copy this file, rename it to the month you want (e.g. 2026-09.yaml),
+#  and add events under `events:`. Only `title` and `date` are required.
+#
+#  events:
+#    - title: CTF practice night
+#      date:  2026-09-17
+#      time:  "18:00"          # optional
+#      category: ctf            # meeting | ctf | workshop | social | club | other
+#      location: T119           # optional
+#      tags: [ctf, club]        # optional — drives the sidebar filters
+#      note: Bring a laptop.    # optional
+# =====================================================================
+
+events:
+  - title: BSidesOttawa Early Bird Deadline
+    date:  2026-10-25
+    time:  "11:59"
+    category: social
+    location: N/A
+    tags: [conference, social]
+    note: This is the deadline for ordering tickets for BSides at a discounted rate.
+  - title: CyberSci Registration Deadline for Teams
+    date:  2026-10-31
+    time:  "11:59"
+    category: ctf
+    location: N/A
+    tags: [ctf, club]
+    note: This is the due date for Professor Rob Brandon to submit the teams.
