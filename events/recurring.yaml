@@ -26,7 +26,7 @@ recurring:
     note: Hosted by Mat
     tags: [club, meeting]
   - title: Kali Club - Wednesday Meet
-    weekday: mon
+    weekday: wed
     time: "08:00"
     end_time: "10:00"
     category: meeting
@@ -34,7 +34,7 @@ recurring:
     note: Hosted by Rob
     tags: [club, meeting]
   - title: Kali Club - Virtual Meet
-    weekday: mon
+    weekday: wed
     time: "19:00"
     end_time: "21:00"
     category: meeting
