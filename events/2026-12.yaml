@@ -1,0 +1,45 @@
+# =====================================================================
+#  MONTH TEMPLATE  (events/TEMPLATE.yaml)
+# ---------------------------------------------------------------------
+#  Copy this file, rename it to the month you want (e.g. 2026-09.yaml),
+#  and add events under `events:`. Only `title` and `date` are required.
+#
+#  events:
+#    - title: CTF practice night
+#      date:  2026-09-17
+#      time:  "18:00"          # optional
+#      category: ctf            # meeting | ctf | workshop | social | club | other
+#      location: T119           # optional
+#      tags: [ctf, club]        # optional — drives the sidebar filters
+#      note: Bring a laptop.    # optional
+# =====================================================================
+
+events:
+  - title: INCYBER Forum Day 1
+    date:  2026-12-01
+    time:  "07:00"
+    category: social
+    location: TBD
+    tags: [social]
+    note: More info available at https://canada.forum-incyber.com/
+  - title: INCYBER Forum Day 2
+    date:  2026-12-02
+    time:  "07:00"
+    category: social
+    location: TBD
+    tags: [social]
+    note: More info available at https://canada.forum-incyber.com/
+  - title: INCYBER Forum Day 3
+    date:  2026-12-03
+    time:  "07:00"
+    category: social
+    location: TBD
+    tags: [social]
+    note: More info available at https://canada.forum-incyber.com/
+  - title: ODTN Ottawa 2026 Volunteer Registration Deadline
+    date:  2026-12-04
+    time:  "11:59"
+    category: social
+    location: National Arts Centre, 1 Elgin St, Ottawa, ON K1P 5W1
+    tags: [social]
+    note: More info available at https://siberx.org/event/operation-defend-the-north-2027-ottawa/
